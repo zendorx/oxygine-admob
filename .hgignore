@@ -1,0 +1,5 @@
+syntax: glob
+android/build/intermediates/blame/res/debug/multi/values-kn-rIN.json
+android/build/
+android/.gradle/
+android/oxygine-admob.iml
