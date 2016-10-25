@@ -62,27 +62,52 @@ namespace admob
         log::messageln("admob::free done");
     }
 
-    /*void doSomething()
+    void load()
     {
+#if !ADMOB_EXT_ENABLED
+        return;
+#endif
+
+
 #ifdef __ANDROID__
-        jniDoSomethingInJava();
-#elif TARGET_OS_IPHONE
-        jniDoSomethingInObjectiveC();
-#else
-        simulatorFunction();
+        jniAdmobLoad();
+#endif
+    }
+
+    void show()
+    {
+#if !ADMOB_EXT_ENABLED
+        return;
+#endif
+
+        
+#ifdef __ANDROID__
+        jniAdmobShow();
+#endif
+    }
+
+    bool isLoaded()
+    {
+#if !ADMOB_EXT_ENABLED
+        return false;
 #endif
         
-    }*/
 
+#ifdef __ANDROID__
+        return  jniAdmobIsLoaded();
+#endif
+        return false;
+    }
 
+    
     namespace internal
     {
 
-        /*void callItFromNativeCallback()
+        void onChange(int newStatus)
         {
-            YourEventExample ev;
+            OnChangeEvent ev(newStatus);
             _dispatcher->dispatchEvent(&ev);
-        }*/
+        }
     }
 }
 

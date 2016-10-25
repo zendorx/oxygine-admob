@@ -18,7 +18,10 @@ apply plugin: 'com.android.library'
 
 dependencies {
         compile(project(':oxygine-extension'))
-    }
+        compile 'com.google.android.gms:play-services-ads:8.+'
+}
+
+
 
 android {
 		lintOptions {

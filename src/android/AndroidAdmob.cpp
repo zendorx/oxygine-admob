@@ -24,18 +24,13 @@ bool isAdmobEnabled()
 
 extern "C"
 {
-    /*JNIEXPORT void JNICALL Java_org_oxygine_admob_AdmobAdapter_YOUR_FUNC_NAME(JNIEnv* env, jobject obj, jstring json_data, jboolean error)
+    JNIEXPORT void JNICALL Java_org_oxygine_admob_AdmobAdapter_onNativeChanged(JNIEnv* env, jobject obj, int newStatus)
     {
-        string data = jniGetString(env, json_data);
-
         core::getMainThreadDispatcher().postCallback([ = ]()
         {
-            //call internal function there from src/admob/admob.h
-            admob::internal::callItFromNativeCallback();
+            admob::internal::onChange(newStatus);
         });
-    }*/
-
-
+    }
 }
 
 
@@ -82,6 +77,76 @@ void jniAdmobFree()
     {
 
     }
+}
+
+void jniAdmobShow()
+{
+    if (!isAdmobEnabled())
+        return;
+            
+    try
+    {
+        JNIEnv* env = jniGetEnv();
+        LOCAL_REF_HOLDER(env);
+        
+        jmethodID jmethod = env->GetMethodID(_jAdmobClass, "show", "()V");
+        JNI_NOT_NULL(jmethod);
+        
+        env->CallBooleanMethod(_jAdmobObject, jmethod);
+    }
+    catch (const notFound&)
+    {
+        log::error("jniAdmobLoad failed, class/member not found");
+    }
+}
+
+
+void jniAdmobLoad()
+{
+    if (!isAdmobEnabled())
+        return;
+
+    try
+    {
+        JNIEnv* env = jniGetEnv();
+        LOCAL_REF_HOLDER(env);
+        
+        jmethodID jmethod = env->GetMethodID(_jAdmobClass, "load", "()V");
+        JNI_NOT_NULL(jmethod);
+        
+        env->CallBooleanMethod(_jAdmobObject, jmethod);
+    }
+    catch (const notFound&)
+    {
+        log::error("jniAdmobLoad failed, class/member not found");
+    }
+}
+
+
+bool jniAdmobIsLoaded()
+{
+    if (!isAdmobEnabled())
+        return false;
+
+    bool result = false;
+    try
+    {
+        JNIEnv* env = jniGetEnv();
+        LOCAL_REF_HOLDER(env);
+        
+        jmethodID jisMethod = env->GetMethodID(_jAdmobClass, "isLoaded", "()Z");
+        JNI_NOT_NULL(jisMethod);
+        
+        jboolean jb = env->CallBooleanMethod(_jAdmobObject, jisMethod);
+        result = (bool) jb;
+
+    }
+    catch (const notFound&)
+    {
+        log::error("jniAdmobIsLoaded failed, class/member not found");
+    }
+
+    return result;
 }
 
 /*

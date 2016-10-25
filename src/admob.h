@@ -15,19 +15,27 @@ namespace admob
     void init();
     void free();
 
-    /*class YourEventExample : public Event
+	const static int ON_LOADED = 1;
+	const static int ON_FAILED = 2;
+	const static int ON_OPENED = 3;
+	const static int ON_CLOSED = 4;
+
+    class OnChangeEvent : public Event
     {
     public:
         enum { EVENT = sysEventID('f', 'b', 't')};
-        YourEventExample() : Event(EVENT) {};
-    };*/
+        OnChangeEvent(int newStatus) : Event(EVENT),newStatus(newStatus) {};
+        int newStatus = 0;
+    };
 
     spEventDispatcher dispatcher();
 
-    //void doSomething();
+    void load();
+    void show();
+    bool isLoaded();
 
     namespace internal
     {
-            //void callItFromNativeCallback();
+            void onChange(int newStatus);
     }
 };
