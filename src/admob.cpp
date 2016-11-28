@@ -99,6 +99,44 @@ namespace admob
         return false;
     }
 
+    void loadRewarded(const string& unit_id)
+    {
+#if !ADMOB_EXT_ENABLED
+        return;
+#endif
+
+
+#ifdef __ANDROID__
+        jniAdmobLoadRewarded(unit_id);
+#endif
+    }
+
+    void showRewarded()
+    {
+#if !ADMOB_EXT_ENABLED
+        return;
+#endif
+
+
+#ifdef __ANDROID__
+        jniAdmobShowRewarded();
+#endif
+    }
+
+    bool isRewardedLoaded()
+    {
+#if !ADMOB_EXT_ENABLED
+        return false;
+#endif
+
+
+#ifdef __ANDROID__
+        return jniAdmobIsRewardedLoaded();
+#endif
+
+        return false;
+    }
+
     
     namespace internal
     {
@@ -106,6 +144,28 @@ namespace admob
         void onChange(int newStatus)
         {
             OnChangeEvent ev(newStatus);
+            _dispatcher->dispatchEvent(&ev);
+        }
+
+        void onRewardChange(int newStatus)
+        {
+            OnRewardChangeEvent ev;
+            ev.newStatus = newStatus;
+            _dispatcher->dispatchEvent(&ev);
+        }
+        void onReward(const string& type, int amount)
+        {
+            OnRewardChangeEvent ev;
+            ev.newStatus = RW_ON_REWARD;
+            ev.type = type;
+            ev.amount = amount;
+            _dispatcher->dispatchEvent(&ev);
+        }
+        void onRewardFailed(int errorCode)
+        {
+            OnRewardChangeEvent ev;
+            ev.newStatus = RW_ON_FAILED;
+            ev.errorCode = errorCode;
             _dispatcher->dispatchEvent(&ev);
         }
     }
